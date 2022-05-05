@@ -11,3 +11,4 @@ def test_calculator_get_result_method():
     """Testing the Calculator"""
     calculator = Calculator()
     assert calculator.get_result() == 0
+
