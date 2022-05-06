@@ -7,22 +7,23 @@ from app.db import db
 from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
 
-class Song(db.Model,SerializerMixin):
-    __tablename__ = 'songs'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(300), nullable=True, unique=False)
-    artist = db.Column(db.String(300), nullable=True, unique=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = relationship("User", back_populates="songs", uselist=False)
 
-    def __init__(self, title, artist):
-        self.title = title
-        self.artist = artist
+class transactions(db.Model, SerializerMixin):
+    __tablename__ = 'Transactions'
+    id = db.Column(db.Integer, primary_key=True)
+    amount = db.Column(db.String(300), nullable=True, unique=False)
+    types = db.Column(db.String(300), nullable=True, unique=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = relationship("User", back_populates="transactions", uselist=False)
+
+    def __init__(self, amount, types):
+        self.amount = amount
+        self.types = types
+
 
 class Location(db.Model, SerializerMixin):
     __tablename__ = 'locations'
-    serialize_only = ('title', 'longitude', 'latitude')
-
+    serialize_only = ('amount', 'longitude', 'latitude')
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(300), nullable=True, unique=False)
@@ -40,7 +41,7 @@ class Location(db.Model, SerializerMixin):
 
     def serialize(self):
         return {
-            'title': self.title,
+            'amount': self.title,
             'long': self.longitude,
             'lat': self.latitude,
             'population': self.population,
@@ -57,7 +58,7 @@ class User(UserMixin, db.Model):
     registered_on = db.Column('registered_on', db.DateTime)
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
     is_admin = db.Column('is_admin', db.Boolean(), nullable=False, server_default='0')
-    songs = db.relationship("Song", back_populates="user", cascade="all, delete")
+    transactions = db.relationship("transactions", back_populates="user", cascade="all, delete")
     locations = db.relationship("Location", back_populates="user", cascade="all, delete")
 
     # `roles` and `groups` are reserved words that *must* be defined
@@ -88,5 +89,3 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User %r>' % self.email
-
-
