@@ -8,7 +8,7 @@ from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
 
 
-class transactions(db.Model, SerializerMixin):
+class Transaction(db.Model, SerializerMixin):
     __tablename__ = 'Transactions'
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.String(300), nullable=True, unique=False)
@@ -58,7 +58,7 @@ class User(UserMixin, db.Model):
     registered_on = db.Column('registered_on', db.DateTime)
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
     is_admin = db.Column('is_admin', db.Boolean(), nullable=False, server_default='0')
-    transactions = db.relationship("transactions", back_populates="user", cascade="all, delete")
+    transactions = db.relationship("Transaction", back_populates="user", cascade="all, delete")
     locations = db.relationship("Location", back_populates="user", cascade="all, delete")
 
     # `roles` and `groups` are reserved words that *must* be defined

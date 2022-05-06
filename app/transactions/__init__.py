@@ -7,11 +7,11 @@ from flask_login import current_user, login_required
 from jinja2 import TemplateNotFound
 
 from app.db import db
-from app.db.models import transactions
+from app.db.models import Transaction
 from app.transactions.forms import csv_upload
 from werkzeug.utils import secure_filename, redirect
 
-transactions = Blueprint('transactions', __name__,
+transactions = Blueprint('Transaction', __name__,
                          template_folder='templates')
 
 
@@ -20,7 +20,7 @@ transactions = Blueprint('transactions', __name__,
 def songs_browse(page):
     page = page
     per_page = 1000
-    pagination = transactions.query.paginate(page, per_page, error_out=False)
+    pagination = Transaction.query.paginate(page, per_page, error_out=False)
     data = pagination.items
     try:
         return render_template('browse_songs.html', data=data, pagination=pagination)
@@ -39,13 +39,13 @@ def songs_upload():
         filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         form.file.data.save(filepath)
         # user = current_user
-        list_of_songs = []
+        list_of_transactions = []
         with open(filepath) as file:
             csv_file = csv.DictReader(file)
             for row in csv_file:
-                list_of_songs.append(transactions(row['transactions'], row['Type']))
+                list_of_transactions.append(Transaction(row['Transaction'], row['Type']))
 
-        current_user.transactions = list_of_songs
+        current_user.Transaction = list_of_transactions
         db.session.commit()
 
         return redirect(url_for('transactions.songs_browse'))
