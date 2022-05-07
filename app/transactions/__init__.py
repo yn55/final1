@@ -11,7 +11,7 @@ from app.db.models import Transaction
 from app.transactions.forms import csv_upload
 from werkzeug.utils import secure_filename, redirect
 
-transactions = Blueprint('Transaction', __name__,
+transactions = Blueprint('transactions', __name__,
                          template_folder='templates')
 
 
@@ -43,9 +43,9 @@ def songs_upload():
         with open(filepath) as file:
             csv_file = csv.DictReader(file)
             for row in csv_file:
-                list_of_transactions.append(Transaction(row['Transaction'], row['Type']))
+                list_of_transactions.append(Transaction(row['AMOUNT'], row['TYPE']))
 
-        current_user.Transaction = list_of_transactions
+        current_user.transactions = list_of_transactions
         db.session.commit()
 
         return redirect(url_for('transactions.songs_browse'))

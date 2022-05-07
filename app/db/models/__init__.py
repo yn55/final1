@@ -11,19 +11,21 @@ from sqlalchemy_serializer import SerializerMixin
 class Transaction(db.Model, SerializerMixin):
     __tablename__ = 'Transactions'
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(300), nullable=True, unique=False)
     amount = db.Column(db.String(300), nullable=True, unique=False)
-    types = db.Column(db.String(300), nullable=True, unique=False)
+    type = db.Column(db.String(300), nullable=True, unique=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = relationship("User", back_populates="transactions", uselist=False)
 
-    def __init__(self, amount, types):
+    def __init__(self, title, amount, type):
+        self.title = title
         self.amount = amount
-        self.types = types
+        self.type = type
 
 
 class Location(db.Model, SerializerMixin):
     __tablename__ = 'locations'
-    serialize_only = ('amount', 'longitude', 'latitude')
+    serialize_only = ('title', 'longitude', 'latitude')
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(300), nullable=True, unique=False)
@@ -41,7 +43,7 @@ class Location(db.Model, SerializerMixin):
 
     def serialize(self):
         return {
-            'amount': self.title,
+            'title': self.title,
             'long': self.longitude,
             'lat': self.latitude,
             'population': self.population,
