@@ -20,10 +20,4 @@ def test_auth_pages(client):
 
 
 
-def test_upload_csvfile(client):
-    file = "transactions.csv"
-    data = {
-        'image': (open(file, 'rb'), file)
-    }
-    response = client.post('/uploads', data=data)
-    assert response.status_code == 404
+
