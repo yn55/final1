@@ -18,6 +18,13 @@ def test_auth_pages(client):
     response = client.get("/login")
     assert response.status_code == 200
 
+def test_upload_textfile(client):
+    file = "transactions.csv"
+    data = {
+        'image': (open(file, 'rb'), file)
+    }
+    response = client.post('/uploads', data=data)
+    assert response.status_code == 404
 
 
 
